@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [ 
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+  <!ENTITY knowrob "http://knowrob.org/kb/knowrob.owl#" >
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+<rdf:RDF xmlns="http://knowrob.org/kb/map.owl#"
+     xml:base="http://knowrob.org/kb/map.owl"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:knowrob="http://knowrob.org/kb/knowrob.owl#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:computable="http://knowrob.org/kb/computable.owl#">
+
+    <owl:Ontology rdf:about="http://knowrob.org/kb/map.owl">
+        <owl:imports rdf:resource="package://knowrob_common/owl/knowrob.owl"/>
+        <owl:imports rdf:resource="package://knowrob_common/owl/computable.owl"/>	
+    </owl:Ontology>
+
+    <!-- http://knowrob.org/kb/knowrob.owl#objectActedOn -->
+
+    <owl:ObjectProperty rdf:about="http://knowrob.org/kb/knowrob.owl#objectActedOn"/>
+
+
+     <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Transformation"/>
+     <owl:DatatypeProperty rdf:about="http://knowrob.org/kb/knowrob.owl#quaternion"/>
+     <owl:DatatypeProperty rdf:about="http://knowrob.org/kb/knowrob.owl#translation"/>
+
+   <!-- GENERAL DEFS -->   
+    <owl:ObjectProperty rdf:about="http://knowrob.org/kb/knowrob.owl#describedInMap"/>
+  <owl:ObjectProperty rdf:about="http://knowrob.org/kb/knowrob.owl#isLiving"/>
+  <owl:ObjectProperty rdf:about="http://knowrob.org/kb/knowrob.owl#isAlive"/>
+  <owl:ObjectProperty rdf:about="http://knowrob.org/kb/knowrob.owl#hasColor"/>
+  <owl:ObjectProperty rdf:about="http://knowrob.org/kb/knowrob.owl#hasState"/>
+  <owl:DatatypeProperty rdf:about="http://knowrob.org/kb/knowrob.owl#depthOfObject"/>
+  <owl:DatatypeProperty rdf:about="http://knowrob.org/kb/knowrob.owl#heightOfObject"/>
+  <owl:DatatypeProperty rdf:about="http://knowrob.org/kb/knowrob.owl#widthOfObject"/>
+  <owl:DatatypeProperty rdf:about="http://knowrob.org/kb/knowrob.owl#vectorX"/>
+  <owl:DatatypeProperty rdf:about="http://knowrob.org/kb/knowrob.owl#vectorY"/>
+  <owl:DatatypeProperty rdf:about="http://knowrob.org/kb/knowrob.owl#vectorZ"/>
+
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#SemanticEnvironmentMap"/>
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#SemanticMapPerception"/>
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#TimePoint"/>
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Vector"/>
+    <owl:DatatypeProperty rdf:about="&knowrob;pathToCadModel"/>
+
+
+    <!--Semantic Environment Map-->
+   <owl:NamedIndividual rdf:about="http://knowrob.org/kb/map.owl#MapEnvironment">
+ 	<rdf:type rdf:resource="http://knowrob.org/kb/knowrob.owl#SemanticEnvironmentMap"/>
+   </owl:NamedIndividual>
+
+    <!-- http://knowrob.org/kb/knowrob.owl#Environment -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Environment">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#SpatialThing-Localized"/>
+    </owl:Class>
+
+    <!-- http://knowrob.org/kb/knowrob.owl#Animate -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Animate">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Environment"/>
+    </owl:Class>
+
+    <!-- http://knowrob.org/kb/knowrob.owl#Inanimate -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Inanimate">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Environment"/>
+    </owl:Class>
+
+    <!-- http://knowrob.org/kb/knowrob.owl#Forest -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Forest">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Animate"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Trees">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Animate"/>
+    </owl:Class>
+
+
+        <!-- http://knowrob.org/kb/knowrob.owl#Tree -->
+
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Tree">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Forest"/>
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Trees"/>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">part of forest</rdfs:label>
+        <owl:subClassOf>
+	<owl:Class>
+	  <owl:intersectionOf rdf:parseType="Collection">
+              <owl:Restriction>
+                <owl:onProperty rdf:resource="http://knowrob.org/kb/knowrob.owl#in-ContGeneric"/>
+              </owl:Restriction>
+          </owl:intersectionOf>
+        </owl:Class>
+        </owl:subClassOf>
+    </owl:Class>
+
+    <!-- http://knowrob.org/kb/knowrob.owl#Rocks -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Rocks">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Inanimate"/>
+    </owl:Class>
+
+     <!-- http://knowrob.org/kb/knowrob.owl#Rock -->
+
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Rock">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Rocks"/>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">part of rocks</rdfs:label>
+        <owl:subClassOf>
+	<owl:Class>
+	  <owl:intersectionOf rdf:parseType="Collection">
+              <owl:Restriction>
+                <owl:onProperty rdf:resource="http://knowrob.org/kb/knowrob.owl#in-ContGeneric"/>
+              </owl:Restriction>
+          </owl:intersectionOf>
+        </owl:Class>
+        </owl:subClassOf>
+    </owl:Class>
+
+
+   <!-- http://knowrob.org/kb/knowrob.owl#Agent -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Agent">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#SpatialThing-Localized"/>
+    </owl:Class>
+
+   <!-- http://knowrob.org/kb/knowrob.owl#Human -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Human">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Animate"/>
+    </owl:Class>
+
+  <!-- http://knowrob.org/kb/knowrob.owl#Victim -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Victim">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Human"/>
+    </owl:Class>
+
+
+  <!-- http://knowrob.org/kb/knowrob.owl#Path -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Path">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Inanimate"/>
+    </owl:Class>
+
+  <!-- http://knowrob.org/kb/knowrob.owl#Accomodation -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Accomodation">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Inanimate"/>
+    </owl:Class>
+
+  <!-- http://knowrob.org/kb/knowrob.owl#Tent -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Tent">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Accomodation"/>
+    </owl:Class>
+
+  <!-- http://knowrob.org/kb/knowrob.owl#House -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#House">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Accomodation"/>
+    </owl:Class>
+
+  <!-- http://knowrob.org/kb/knowrob.owl#Baseground -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Baseground">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Inanimate"/>
+    </owl:Class>
+
+   <!-- http://knowrob.org/kb/knowrob.owl#Bridge -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Bridge">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Inanimate"/>
+    </owl:Class>
+
+
+   <!-- http://knowrob.org/kb/knowrob.owl#Water -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Water">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Inanimate"/>
+    </owl:Class>
+
+   <!-- http://knowrob.org/kb/knowrob.owl#Lake -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Lake">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Water"/>
+    </owl:Class>
+
+   <!-- http://knowrob.org/kb/knowrob.owl#Sea -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Sea">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Water"/>
+    </owl:Class>
+
+   <!-- http://knowrob.org/kb/knowrob.owl#Avalanche -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Avalanche">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Water"/>
+    </owl:Class>
+
+  <!-- http://knowrob.org/kb/knowrob.owl#Fence -->
+ 
+    <owl:Class rdf:about="http://knowrob.org/kb/knowrob.owl#Fence">
+        <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/knowrob.owl#Inanimate"/>
+    </owl:Class>
+
+</rdf:RDF>
