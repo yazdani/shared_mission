@@ -30,8 +30,12 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS})
 
-# add_executable(tldl_parser nodes_cpp/tldl_parser.cpp)
-# target_link_libraries(tldl_parser ${catkin_LIBRARIES})
-# add_dependencies(tldl_parser hmi_comp_gencpp)
+add_executable(tldl_parser src_cpp/tldl_parser.cpp)
+target_link_libraries(tldl_parser ${catkin_LIBRARIES})
+add_dependencies(tldl_parser hmi_comp_gencpp)
 
+
+add_executable(shutdown_tldl_parser src_cpp/shutdown_tldl_parser.cpp)
+target_link_libraries(shutdown_tldl_parser ${catkin_LIBRARIES})
+add_dependencies(shutdown_tldl_parser hmi_comp_gencpp)
 catkin_package()

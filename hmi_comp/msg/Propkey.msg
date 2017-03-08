@@ -5,4 +5,4 @@ std_msgs/String object_size
 std_msgs/String object_num
 std_msgs/String object_clicked
 std_msgs/String flag
-geometry_msgs/PoseStamped pointing_gesture
+geometry_msgs/Pose pointing_gesture
