@@ -1,4 +1,0 @@
-<launch>
- <node pkg="hmi_comp" type="tldl_parser" name="tldl_parser" respawn="false" output="screen" />
- <node pkg="hmi_comp" type="shutdown_tldl_parser" name="shutdown_tldl_parser" respawn="false" output="screen" />
-</launch>
