@@ -38,4 +38,9 @@ add_dependencies(tldl_parser hmi_comp_gencpp)
 add_executable(shutdown_tldl_parser src_cpp/shutdown_tldl_parser.cpp)
 target_link_libraries(shutdown_tldl_parser ${catkin_LIBRARIES})
 add_dependencies(shutdown_tldl_parser hmi_comp_gencpp)
+
+add_executable(hmi_server src_cpp/hmi_server.cpp)
+target_link_libraries(hmi_server ${catkin_LIBRARIES})
+add_dependencies(hmi_server hmi_comp_gencpp)
+
 catkin_package()
