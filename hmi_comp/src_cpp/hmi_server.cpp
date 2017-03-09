@@ -182,25 +182,65 @@ std::vector<hmi_comp::Desig> stringToDesigMsg(string words, string actor, string
 void getCmd(std_msgs::String request)
 {
   string req = request.data;
+  boost::algorithm::to_lower(req);
   ros::NodeHandle n_client;
   ros::NodeHandle n_client_viewpoint;
   ros::NodeHandle n_client_actor;
   ros::NodeHandle n_client_clicked;
-  hmi_comp::tldl_parser srv;
+  hmi_comp::tldl_parser srv_tldl;
   hmi_comp::tldl_parser srv_actor;
   hmi_comp::tldl_parser srv_viewpoint;
   hmi_comp::tldl_parser srv_clicked;
-  ros::ServiceClient client = n_client.serviceClient<hmi_comp::tldl_parser>("/ros_parser");
+
+  ros::ServiceClient client = n_client.serviceClient<hmi_comp::tldl_parser>("/tldl_parser");
   ros::ServiceClient client_viewpoint = n_client_viewpoint.serviceClient<hmi_comp::tldl_parser>("/add_viewpoint");
-  ros::ServiceClient client_actor = n_client_actor.serviceClient<hmi_comp::tldl_parser>("/add_agent_name");
-  ros::ServiceClient client_clicked = n_client_clicked.serviceClient<hmi_comp::tldl_parser>("/add_openease_name");
+  ros::ServiceClient client_actor = n_client_actor.serviceClient<hmi_comp::tldl_parser>("/add_actor");
+  ros::ServiceClient client_clicked = n_client_clicked.serviceClient<hmi_comp::tldl_parser>("/add_openease");
   std::string inp;
   std::string received_highlevel_cmd = req;//.goal;
- 
+  std::string agent_previous = "robot";
   std::vector<string> actions = splitString(req, " ");
 
-  srv.request.goal = req;
-  if (client.call(srv))
+  srv_tldl.request.goal = req;
+
+  if(req.compare("red wasp") == 0 || req.compare("blue wasp") == 0 || req.compare("donkey") == 0)
+    {
+      srv_actor.request.goal = req;
+      agent_previous = req;
+      if (client_actor.call(srv_actor))
+  	{
+  	  ROS_INFO_STREAM("Waiting Agent Server");
+  	}
+      else
+  	{
+  	  ROS_ERROR("Failed to call Agent Server");
+  	  return;
+  	}
+      return;
+    }
+  ROS_INFO_STREAM("REUQEEEST");
+  ROS_INFO_STREAM(req);
+  if(actions.size() == 4)
+    {
+ if(req.compare("go to your right") == 0 || req.compare("go to your left") == 0 )
+   {
+      srv_viewpoint.request.goal = agent_previous;
+      if (client_viewpoint.call(srv_viewpoint))
+ 	{
+ 	  ROS_INFO_STREAM("Waiting Viewpoint Server");
+ 	}
+      else
+ 	{
+ 	  ROS_ERROR("Failed to call Viewpoint Server");
+ 	  return;
+ 	}
+   }
+    }
+  ROS_INFO_STREAM("SERVICEEEEEEEEEEEEEEEEEE");
+  ROS_INFO_STREAM(actions.size());
+
+  ROS_INFO_STREAM(srv_tldl.request.goal);
+  if (client.call(srv_tldl))
      {
      	ROS_INFO_STREAM("Waiting for the TLDL parser");
       }
@@ -210,50 +250,50 @@ void getCmd(std_msgs::String request)
      	return;
       }
 
-  // srv_actor.request.goal = "get";
-  // if (client_actor.call(srv_actor))
-  //    {
-  //      ROS_INFO_STREAM("Waiting Agent Server");
-  //    }
-  // else
-  //   {
-  //     ROS_ERROR("Failed to call Agent Server");
-  //     return;
-  //   }
+  srv_actor.request.goal = "get";
+  if (client_actor.call(srv_actor))
+     {
+       ROS_INFO_STREAM("Waiting Agent Server");
+     }
+  else
+    {
+      ROS_ERROR("Failed to call Agent Server");
+      return;
+    }
 
-  // srv_viewpoint.request.goal = "get";
-  // if (client_viewpoint.call(srv_viewpoint))
-  //    {
-  //      ROS_INFO_STREAM("Waiting Viewpoint Server");
-  //    }
-  // else
-  //   {
-  //     ROS_ERROR("Failed to call Viewpoint Server");
-  //     return;
-  //   }
+  srv_viewpoint.request.goal = "get";
+  if (client_viewpoint.call(srv_viewpoint))
+     {
+       ROS_INFO_STREAM("Waiting Viewpoint Server");
+     }
+  else
+    {
+      ROS_ERROR("Failed to call Viewpoint Server");
+      return;
+    }
 
-  // srv_clicked.request.goal = "get";
-  // if (client_clicked.call(srv_clicked))
-  //    {
-  //      ROS_INFO_STREAM("Waiting Clicked Server");
-  //    }
-  // else
-  //   {
-  //     ROS_ERROR("Failed to call Clicked Server");
-  //     return;
-  //   }
+  srv_clicked.request.goal = "get";
+  if (client_clicked.call(srv_clicked))
+     {
+       ROS_INFO_STREAM("Waiting Clicked Server");
+     }
+  else
+    {
+      ROS_ERROR("Failed to call Clicked Server");
+      return;
+    }
 
 
   std::vector<hmi_comp::Desig> desigs;
   hmi_comp::Desig desig;
-  string actor;
-  string viewpoint;
-  string clicked;
-  desigs = stringToDesigMsg(srv.response.result, actor, viewpoint, clicked);
+  string actor = srv_actor.response.result;
+  string viewpoint = srv_viewpoint.response.result;
+  string clicked = srv_clicked.response.result;
+  desigs = stringToDesigMsg(srv_tldl.response.result, actor, viewpoint, clicked);
   
   ros::NodeHandle ncram_client;
   hmi_comp::HMIDesig cram_srv;
-  ROS_INFO_STREAM("Desigs");
+  ROS_INFO_STREAM("Desigs-------------------------------------");
   ROS_INFO_STREAM(desigs[0]);
   ros::ServiceClient cram_client = ncram_client.serviceClient<hmi_comp::HMIDesig>("/service_cram_reasoning");
   

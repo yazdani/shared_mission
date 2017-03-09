@@ -284,31 +284,41 @@ bool parser(hmi_comp::tldl_parser::Request &req,
 {
   ROS_INFO_STREAM(req.goal);
   string request=req.goal;
+  ROS_INFO_STREAM(request);
+ 
   boost::algorithm::to_lower(request);
-  boost::replace_all(request,"Go right","Go right nil");
-  boost::replace_all(request,"Go left"," left nil");
-  boost::replace_all(request,"Come back","Come back nil");
-  boost::replace_all(request,"Go straight","Go straight nil");
-  boost::replace_all(request,"Go ahead","Go ahead nil");
-  boost::replace_all(request,"Move right","Go right nil");
-  boost::replace_all(request,"Move left","Go left nil");
-  boost::replace_all(request,"Move straight","Go straight nil");
-  boost::replace_all(request,"Move ahead","Go ahead nil");
+  std::vector<string> actions = splitString(request, " ");
+if(actions.size()== 2)
+   {
+     boost::replace_all(request,"go right","go right nil");
+     boost::replace_all(request,"go left","go left nil");
+     boost::replace_all(request,"come back","come back nil");
+     boost::replace_all(request,"go straight","go straight nil");
+     boost::replace_all(request,"go ahead","go ahead nil");
+     boost::replace_all(request,"move right","go right nil");
+     boost::replace_all(request,"move left","go left nil");
+     boost::replace_all(request,"move straight","go straight nil");
+     boost::replace_all(request,"move ahead","go ahead nil");
+   }
 
-  if (request.compare("Go to your right") == 0)
+ if(actions.size() == 4)
+   {
+  if (request.compare("go to your right") == 0)
     {
-      boost::replace_all(request,"Go to your right","Go right nil");
-    }else if (request.compare("Go to your left") == 0)
+      boost::replace_all(request,"go to your right","go right nil");
+    }else if (request.compare("go to your left") == 0)
     {
-      boost::replace_all(request,"Go to your left","Go left nil");
-    }else if (request.compare("Move to your left") == 0)
+      boost::replace_all(request,"go to your left","go left nil");
+    }else if (request.compare("move to your left") == 0)
     {
-      boost::replace_all(request,"Move to your left","Go left nil");
-    }else if  (request.compare("Move to your right") == 0)
+      boost::replace_all(request,"move to your left","go left nil");
+    }else if  (request.compare("move to your right") == 0)
     {
-      boost::replace_all(request,"Move to your right","Go right nil");
+      boost::replace_all(request,"move to your right","go right nil");
     }
-
+}
+  ROS_INFO_STREAM("REEEEEEEEEEEEEEEEEEEEEE");
+  ROS_INFO_STREAM(request);
   res.result = without_brakets(interpretByParser(request));
   return true;
 }
@@ -330,11 +340,9 @@ int main(int argc, char **argv)
     perror("ERROR opening socket");
     exit(1);
   }
-
   int reuse = 1;
   if (setsockopt(sockfd, SOL_SOCKET, (SO_REUSEPORT | SO_REUSEADDR), (const char*)&reuse, sizeof(reuse)) < 0)
     perror("setsockopt(SO_REUSEADDR) failed");
-  
   bzero((char *) &serv_addr, sizeof(serv_addr));
   portno = 1234;
   serv_addr.sin_family = AF_INET;
@@ -344,18 +352,17 @@ int main(int argc, char **argv)
     perror("ERROR on binding");
     exit(1);
   }
-
   listen(sockfd,5);
   clilen = sizeof(cli_addr);
   newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, (socklen_t*)&clilen);
-  
+
   if (newsockfd < 0) {
     perror("ERROR on accept");
     exit(1);
   }
   //  system("killall gnome-terminal");//cmd.c_str());
   ros::Duration(0.5).sleep(); 
-  ros::ServiceServer service = n.advertiseService("ros_parser", parser);
+  ros::ServiceServer service = n.advertiseService("tldl_parser", parser);
   ROS_INFO_STREAM("Wait for instruction");
   ros::spin();
     
